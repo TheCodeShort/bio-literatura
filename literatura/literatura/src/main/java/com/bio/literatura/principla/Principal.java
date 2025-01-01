@@ -12,13 +12,15 @@ public class Principal {
 	private ConvierteDatos convierteDatos = new ConvierteDatos();
 
 	private Scanner teclado = new Scanner(System.in);
-	private final String URL_BASE = "http://gutendex.com/books";//esta api no necesita registro se puede hacer la consulta sin problemas
-	private final String URL_BUSQUEDA = "/search";
+	private final String URL_BASE = "http://gutendex.com/books?/search=";//esta api no necesita registro se puede hacer la consulta sin problemas
+
 
 
 	public DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
-//		var json = consumoAPI.obtenerDatos(URL_BASE);
-		var json = consumoAPI.obtenerDatos(URL_BASE);
+		System.out.print("Digite el libro que quiere buscar: ");
+		var libro = teclado.nextLine();
+
+		var json = consumoAPI.obtenerDatos(URL_BASE + libro);
 		if (json == null || json.isEmpty()) {
 			throw new RuntimeException("La API devolvió una respuesta vacía.");
 		}
@@ -27,7 +29,6 @@ public class Principal {
 	}
 
 	public void mostrar(){
-		DatosLibro datosLibro = getDatosLibro();
-		System.out.println(datosLibro);
+		System.out.println(getDatosLibro());
 	}
 }
