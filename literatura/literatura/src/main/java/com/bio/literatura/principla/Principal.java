@@ -51,7 +51,7 @@ public class Principal {
 		System.out.print("Digite el libro que quiere buscar: ");
 		var libro = teclado.nextLine();
 
-		var json = consumoAPI.obtenerDatos(URL_BASE + libro);
+		var json = consumoAPI.obtenerDatos(URL_BASE);
 		if (json == null || json.isEmpty()) {
 			throw new RuntimeException("La API devolvió una respuesta vacía.");
 		}
