@@ -9,12 +9,10 @@ public class ConvierteDatos implements IConviertDatos {
 
 
 	@Override
-	public <T> T obtenerDatos(String json, Class<T> clase) {//utilizamos el manejo de erroes.
+	public <T> T obtenerDatos(String json, Class <T> clase) {//utilizamos el manejo de erroes.
 
 		try{
 			return objectMapper.readValue(json, clase);	//.readValue deserializar un JSON en un objeto Java
-		} catch (JsonMappingException e) {
-			throw new RuntimeException(e);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
