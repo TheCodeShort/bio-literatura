@@ -17,7 +17,8 @@ public class Autor {
 	private String nombre;
 	private Integer anioNacimiento;
 	private Integer anioMuerte;
-	@OneToMany(mappedBy = "autor", cascade = CascadeType.ALL,fetch = FetchType.EAGER)//se crea la relacion de uno a muchos con la tabla libro
+	//@OneToMany(mappedBy = "autor", cascade = CascadeType.ALL,fetch = FetchType.EAGER)//se crea la relacion de uno a muchos con la tabla libro
+	@Transient///con esto decimos que no a utilizar esrta lista
 	private List<Libros> infoLibros;
 	public Autor(){}
 

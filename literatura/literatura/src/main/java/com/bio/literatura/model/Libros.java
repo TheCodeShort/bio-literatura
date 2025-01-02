@@ -32,6 +32,9 @@ public class Libros {
 		}
 	}
 
+	public Libros(DatosLibro datos) {
+	}
+
 	public String getTitulo() {
 		return titulo;
 	}

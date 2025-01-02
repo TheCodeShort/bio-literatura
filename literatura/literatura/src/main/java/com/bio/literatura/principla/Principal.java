@@ -1,7 +1,8 @@
 package com.bio.literatura.principla;
 
+import com.bio.literatura.repositorio.IAutorRepositorio;
 import com.bio.literatura.model.DatosLibro;
-import com.bio.literatura.repositorio.IBIORepositorio;
+import com.bio.literatura.model.Libros;
 import com.bio.literatura.service.ConsumoAPI;
 import com.bio.literatura.service.ConvierteDatos;
 
@@ -15,10 +16,9 @@ public class Principal {
 	private Scanner teclado = new Scanner(System.in);
 	private final String URL_BASE = "http://gutendex.com/books/?search=";//esta api no necesita registro se puede hacer la consulta sin problemas
 
-	private IBIORepositorio ibioRepositorio;
-
-	public Principal(IBIORepositorio ibioRepositorio) {
-		this.ibioRepositorio = ibioRepositorio;
+	private IAutorRepositorio repositorio;
+	public Principal(IAutorRepositorio repository){
+		this.repositorio = repository;
 	}
 
 	public void muestraMenu(){
@@ -67,6 +67,8 @@ public class Principal {
 	}
 
 	private void mostrar(){
-		System.out.println(getDatosLibro());
+		DatosLibro datos = getDatosLibro();
+		Libros libros = new Libros(datos);
+		repositorio.save(libros);
 	}
 }
