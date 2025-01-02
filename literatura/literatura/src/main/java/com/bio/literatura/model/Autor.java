@@ -7,9 +7,7 @@ import java.util.List;
 @Table(name = "autor")//se crea la tabla libro
 public class Autor {
 
-	@OneToMany(mappedBy = "autor", cascade = CascadeType.ALL,fetch = FetchType.EAGER)//se crea la relacion de uno a muchos con la tabla libro
-	private List<Libros> datosLibro;
-	public Autor(){}
+
 
 	@Id//se crea el id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)//se genera automaticamente el id (cuando se inserta un nuevo libro se genera automaticamente el id)
@@ -19,6 +17,9 @@ public class Autor {
 	private String nombre;
 	private Integer anioNacimiento;
 	private Integer anioMuerte;
+	@OneToMany(mappedBy = "autor", cascade = CascadeType.ALL,fetch = FetchType.EAGER)//se crea la relacion de uno a muchos con la tabla libro
+	private List<Libros> infoLibros;
+	public Autor(){}
 
 	public Autor(String nombre, Integer anioNacimiento, Integer anioMuerte) {
 		this.nombre = nombre;
@@ -30,6 +31,14 @@ public class Autor {
 		this.nombre = datosLibro.nombre();
 		this.anioNacimiento = datosLibro.anioNacimiento();
 		this.anioMuerte = datosLibro.anioMuerte();
+	}
+
+	public List<Libros> getInfoLibros() {
+		return infoLibros;
+	}
+
+	public void setInfoLibros(List<Libros> infoLibros) {
+		this.infoLibros = infoLibros;
 	}
 
 	public String getNombre() {
@@ -55,4 +64,14 @@ public class Autor {
 	public void setAnioMuerte(Integer anioMuerte) {
 		this.anioMuerte = anioMuerte;
 	}
+
+	@Override
+	public String toString() {
+		return "Autor{" +
+				"nombre='" + nombre + '\'' +
+				", anioNacimiento=" + anioNacimiento +
+				", anioMuerte=" + anioMuerte +
+				'}';
+	}
 }
+

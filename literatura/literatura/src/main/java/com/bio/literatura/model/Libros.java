@@ -6,25 +6,21 @@ import java.util.List;
 @Entity //se crea la entidad libro
 @Table(name = "libros")//se crea la tabla libro
 public class Libros {
-	@ManyToOne//se crea la relacion de muchos a uno con la tabla autor
-	private Autor autor;
 
-	public Libros() {
-	}
 
 	@Id//se crea el id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//se genera automaticamente el id (cuando se inserta un nuevo libro se genera automaticamente el id)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)//se genera automaticamente el id (cuando se inserta un nuevo libro se genera automaticamente el id)
 	private Long id;//
 
 	@Column(unique = true)//se crea la columna titulo y se le asigna unico
-	private List<DatosAutor> datosLibros;
 	private String titulo;
 	private Integer descargas;
+	@ManyToOne//se crea la relacion de muchos a uno con la tabla autor
+	private Autor autor;
+	public Libros() {}
 
-	public Libros(Autor autor, List<DatosAutor> datosLibros, String titulo, Integer descargas) {
+	public Libros(Autor auto, String titulo, Integer descargas) {
 		this.autor = autor;
-		this.datosLibros = datosLibros;
 		this.titulo = titulo;
 		this.descargas = descargas;
 	}
@@ -34,6 +30,38 @@ public class Libros {
 			this.titulo = datosAutor.titulo();
 			this.descargas = datosAutor.descargas();
 		}
+	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+
+	public Integer getDescargas() {
+		return descargas;
+	}
+
+	public void setDescargas(Integer descargas) {
+		this.descargas = descargas;
+	}
+
+	public Autor getAutor() {
+		return autor;
+	}
+
+	public void setAutor(Autor autor) {
+		this.autor = autor;
+	}
+
+	@Override
+	public String toString() {
+		return "Libros{" +
+				"titulo='" + titulo + '\'' +
+				", descargas=" + descargas +
+				'}';
 	}
 }
 
