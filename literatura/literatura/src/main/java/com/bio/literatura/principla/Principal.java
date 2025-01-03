@@ -5,8 +5,6 @@ import com.bio.literatura.repositorio.ILibroRepositorio;
 import com.bio.literatura.service.ConsumoAPI;
 import com.bio.literatura.service.ConvierteDatos;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Principal {
@@ -16,6 +14,7 @@ public class Principal {
 
 	private Scanner teclado = new Scanner(System.in);
 	private final String URL_BASE = "http://gutendex.com/books/?search=";//esta api no necesita registro se puede hacer la consulta sin problemas
+
 
 	private ILibroRepositorio repositorio;//cracion de la interfaz con su nombre y le creamos un constructor
 	public Principal(ILibroRepositorio repository){//evitamos hacer una instanzacion
@@ -45,7 +44,7 @@ public class Principal {
 					busCarLibro();
 					break;
 				case 2:
-					BuscarLibroPorAutor();
+					buscarLibroPorAutor();
 				case 0:
 					System.out.println("Gracias por usar el programa");
 					break;
@@ -60,7 +59,7 @@ public class Principal {
 
 
 	private DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
-		System.out.print("digita el titulo del libro o nombre autor: ");
+		System.out.print("digita el titulo del libro: ");
 		var libro = teclado.nextLine().strip();
 		//El uso de %20 se debe al protocolo de codificación de URLs (definido en el estándar RFC 3986),
 		var json = consumoAPI.obtenerDatos(URL_BASE + libro.replace(" ", "%20"));
@@ -79,17 +78,15 @@ public class Principal {
 		repositorio.save(libros);
 	}
 
-	private void BuscarLibroPorAutor(){
+	private void buscarLibroPorAutor(){
 		System.out.print("digita el nombre del autor: ");
 		var autor = teclado.nextLine().strip();
 		var json = consumoAPI.obtenerDatos(URL_BASE + autor.replace(" ", "%20"));
-
 		DatosLibro datosLibro = convierteDatos.obtenerDatos(json, DatosLibro.class);
+		repositorio.save(new Libros(datosLibro));
 		System.out.println(datosLibro);
-		List<DatosLibro> datosLibros = new ArrayList<>();
-		datosLibros.add(datosLibro);
-		datosLibros.stream()
-					.filter();
 
-	}
+	   }
+
 }
+

@@ -25,10 +25,10 @@ DELETE  FROM libros WHERE ID = 15*/
 	@OneToMany(mappedBy = "libros")//se crea la relacion de uno a muchos
 	private List<Autores> autores;
 
-	public Libros( String titulo, Integer descargas, String nombre, Integer anioNacimiento, Integer anioMuerte) {
+	public Libros( String titulo, Integer descargas, String autor, Integer anioNacimiento, Integer anioMuerte) {
 		this.titulo = titulo;
 		this.descargas = descargas;
-		this.autor = nombre;
+		this.autor = autor;
 		this.anioNacimiento = anioNacimiento;
 		this.anioMuerte = anioMuerte;
 	}
