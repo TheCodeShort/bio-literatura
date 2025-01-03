@@ -22,10 +22,8 @@ DELETE  FROM libros WHERE ID = 15*/
 	private Integer anioMuerte;
 
 
-
-	/*@ManyToOne//se crea la relacion de muchos a uno con la tabla autor
-	private Autor autor;
-	public Libros() {}*/
+	@OneToMany(mappedBy = "libros")//se crea la relacion de uno a muchos
+	private List<Autores> autores;
 
 	public Libros( String titulo, Integer descargas, String nombre, Integer anioNacimiento, Integer anioMuerte) {
 		this.titulo = titulo;
@@ -41,11 +39,11 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.titulo = datosAutor.titulo();
 
 		DatosInformacion datosInformacion = datosAutor.autores().get(0);
-		this.autor = datosInformacion.nombre();
+		this.autor = datosInformacion.autor();
 		this.anioNacimiento = datosInformacion.anioNacimiento();
 		this.anioMuerte = datosInformacion.anioMuerte();
 
-			}
+	}
 
 	public Integer getDescargas() {
 		return descargas;

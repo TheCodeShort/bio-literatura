@@ -1,11 +1,12 @@
 package com.bio.literatura.principla;
 
+import com.bio.literatura.model.*;
 import com.bio.literatura.repositorio.ILibroRepositorio;
-import com.bio.literatura.model.DatosLibro;
-import com.bio.literatura.model.Libros;
 import com.bio.literatura.service.ConsumoAPI;
 import com.bio.literatura.service.ConvierteDatos;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Principal {
@@ -31,8 +32,9 @@ public class Principal {
 					""");
 
 			var menu = """
-					1. Buscar libro
-					0. Salir
+					1. Buscar libro.
+					2. Buscar libro por autor.
+					0. Salir.
 					""";
 			System.out.println(menu);
 			System.out.print("Digita la obcion: ");
@@ -42,6 +44,8 @@ public class Principal {
 				case 1:
 					busCarLibro();
 					break;
+				case 2:
+					BuscarLibroPorAutor();
 				case 0:
 					System.out.println("Gracias por usar el programa");
 					break;
@@ -54,8 +58,9 @@ public class Principal {
 	}
 
 
+
 	private DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
-		System.out.print("digita el titulo del libro: ");
+		System.out.print("digita el titulo del libro o nombre autor: ");
 		var libro = teclado.nextLine().strip();
 		//El uso de %20 se debe al protocolo de codificación de URLs (definido en el estándar RFC 3986),
 		var json = consumoAPI.obtenerDatos(URL_BASE + libro.replace(" ", "%20"));
@@ -72,5 +77,19 @@ public class Principal {
 		Libros libros = new Libros(datos);
 		System.out.println(libros);
 		repositorio.save(libros);
+	}
+
+	private void BuscarLibroPorAutor(){
+		System.out.print("digita el nombre del autor: ");
+		var autor = teclado.nextLine().strip();
+		var json = consumoAPI.obtenerDatos(URL_BASE + autor.replace(" ", "%20"));
+
+		DatosLibro datosLibro = convierteDatos.obtenerDatos(json, DatosLibro.class);
+		System.out.println(datosLibro);
+		List<DatosLibro> datosLibros = new ArrayList<>();
+		datosLibros.add(datosLibro);
+		datosLibros.stream()
+					.filter();
+
 	}
 }
