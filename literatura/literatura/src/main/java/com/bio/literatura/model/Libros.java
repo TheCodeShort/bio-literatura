@@ -2,11 +2,13 @@ package com.bio.literatura.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 @Entity //se crea la entidad libro
 @Table(name = "libros")//se crea la tabla libro
 public class Libros {
-
+	/*SELECT * FROM libros
+DELETE  FROM libros WHERE ID = 15*/
 
 	@Id//se crea el id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)//se genera automaticamente el id (cuando se inserta un nuevo libro se genera automaticamente el id)
@@ -15,48 +17,42 @@ public class Libros {
 	@Column(unique = true)//se crea la columna titulo y se le asigna unico
 	private String titulo;
 	private Integer descargas;
-	private String nombre;
+	private String autor;
 	private Integer anioNacimiento;
 	private Integer anioMuerte;
 
-	@Transient
-	private List<DatosLibro> datosLibros;
-	@Transient
-	private List<DatosAutor> datosAutor;
-	@Transient
-	private List<DatosInformacion> datosInformacion;
+
+
 	/*@ManyToOne//se crea la relacion de muchos a uno con la tabla autor
 	private Autor autor;
 	public Libros() {}*/
 
-	public Libros(List<DatosLibro> datosLibros, List<DatosAutor> datosAutor, List<DatosInformacion> datosInformacion, String titulo, Integer descargas, String nombre, Integer anioNacimiento, Integer anioMuerte) {
+	public Libros( String titulo, Integer descargas, String nombre, Integer anioNacimiento, Integer anioMuerte) {
 		this.titulo = titulo;
 		this.descargas = descargas;
-		this.nombre = nombre;
+		this.autor = nombre;
 		this.anioNacimiento = anioNacimiento;
 		this.anioMuerte = anioMuerte;
-		this.datosLibros = datosLibros;
-		this.datosAutor =  datosAutor;
-		this.datosInformacion = datosInformacion;
-
 	}
 
+	public Libros(DatosLibro datosLibro) {
+		DatosAutor datosAutor = datosLibro.resultado().get(0);
+		this.descargas = datosAutor.descargas();
+		this.titulo = datosAutor.titulo();
 
-
-	public Libros(DatosAutor datosAutor) {
-			this.titulo = datosAutor.titulo();
-			this.descargas = datosAutor.descargas();
-
-
-		}
-
-	public Libros (DatosInformacion datosInformacion){
-		this.nombre = datosInformacion.nombre();
+		DatosInformacion datosInformacion = datosAutor.autores().get(0);
+		this.autor = datosInformacion.nombre();
 		this.anioNacimiento = datosInformacion.anioNacimiento();
 		this.anioMuerte = datosInformacion.anioMuerte();
+
+			}
+
+	public Integer getDescargas() {
+		return descargas;
 	}
 
-	public Libros(DatosLibro datos) {
+	public void setDescargas(Integer descargas) {
+		this.descargas = descargas;
 	}
 
 	public String getTitulo() {
@@ -67,20 +63,12 @@ public class Libros {
 		this.titulo = titulo;
 	}
 
-	public Integer getDescargas() {
-		return descargas;
-	}
-
-	public void setDescargas(Integer descargas) {
-		this.descargas = descargas;
-	}
-
 	public String getNombre() {
-		return nombre;
+		return autor;
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		this.autor = nombre;
 	}
 
 	public Integer getAnioNacimiento() {
@@ -104,9 +92,9 @@ public class Libros {
 		return "Libros{" +
 				"titulo='" + titulo + '\'' +
 				", descargas=" + descargas +
-				", nombre='" + nombre + '\'' +
 				", anioNacimiento=" + anioNacimiento +
 				", anioMuerte=" + anioMuerte +
+				", nombre='" + autor + '\'' +
 				'}';
 	}
 }

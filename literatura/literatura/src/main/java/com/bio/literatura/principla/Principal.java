@@ -55,7 +55,7 @@ public class Principal {
 
 
 	private DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
-		System.out.print("Digite el libro que quiere buscar: ");
+		System.out.print("digita el titulo del libro: ");
 		var libro = teclado.nextLine().strip();
 		//El uso de %20 se debe al protocolo de codificación de URLs (definido en el estándar RFC 3986),
 		var json = consumoAPI.obtenerDatos(URL_BASE + libro.replace(" ", "%20"));
@@ -68,6 +68,7 @@ public class Principal {
 
 	private void busCarLibro(){
 		DatosLibro datos = getDatosLibro();
+		System.out.println(datos);
 		Libros libros = new Libros(datos);
 		System.out.println(libros);
 		repositorio.save(libros);
