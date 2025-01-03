@@ -1,6 +1,6 @@
 package com.bio.literatura.principla;
 
-import com.bio.literatura.repositorio.IAutorRepositorio;
+import com.bio.literatura.repositorio.ILibroRepositorio;
 import com.bio.literatura.model.DatosLibro;
 import com.bio.literatura.model.Libros;
 import com.bio.literatura.service.ConsumoAPI;
@@ -16,8 +16,8 @@ public class Principal {
 	private Scanner teclado = new Scanner(System.in);
 	private final String URL_BASE = "http://gutendex.com/books/?search=";//esta api no necesita registro se puede hacer la consulta sin problemas
 
-	private IAutorRepositorio repositorio;
-	public Principal(IAutorRepositorio repository){
+	private ILibroRepositorio repositorio;//cracion de la interfaz con su nombre y le creamos un constructor
+	public Principal(ILibroRepositorio repository){//evitamos hacer una instanzacion
 		this.repositorio = repository;
 	}
 
@@ -40,7 +40,7 @@ public class Principal {
 			teclado.nextLine();
 			switch (opcion){
 				case 1:
-					mostrar();
+					busCarLibro();
 					break;
 				case 0:
 					System.out.println("Gracias por usar el programa");
@@ -56,9 +56,9 @@ public class Principal {
 
 	private DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
 		System.out.print("Digite el libro que quiere buscar: ");
-		var libro = teclado.nextLine();
-
-		var json = consumoAPI.obtenerDatos(URL_BASE+libro);
+		var libro = teclado.nextLine().strip();
+		//El uso de %20 se debe al protocolo de codificación de URLs (definido en el estándar RFC 3986),
+		var json = consumoAPI.obtenerDatos(URL_BASE + libro.replace(" ", "%20"));
 		if (json == null || json.isEmpty()) {
 			throw new RuntimeException("La API devolvió una respuesta vacía.");
 		}
@@ -66,9 +66,10 @@ public class Principal {
 		return datosLibro;
 	}
 
-	private void mostrar(){
+	private void busCarLibro(){
 		DatosLibro datos = getDatosLibro();
 		Libros libros = new Libros(datos);
+		System.out.println(libros);
 		repositorio.save(libros);
 	}
 }

@@ -15,21 +15,45 @@ public class Libros {
 	@Column(unique = true)//se crea la columna titulo y se le asigna unico
 	private String titulo;
 	private Integer descargas;
-	@ManyToOne//se crea la relacion de muchos a uno con la tabla autor
-	private Autor autor;
-	public Libros() {}
+	private String nombre;
+	private Integer anioNacimiento;
+	private Integer anioMuerte;
 
-	public Libros(Autor auto, String titulo, Integer descargas) {
-		this.autor = autor;
+	@Transient
+	private List<DatosLibro> datosLibros;
+	@Transient
+	private List<DatosAutor> datosAutor;
+	@Transient
+	private List<DatosInformacion> datosInformacion;
+	/*@ManyToOne//se crea la relacion de muchos a uno con la tabla autor
+	private Autor autor;
+	public Libros() {}*/
+
+	public Libros(List<DatosLibro> datosLibros, List<DatosAutor> datosAutor, List<DatosInformacion> datosInformacion, String titulo, Integer descargas, String nombre, Integer anioNacimiento, Integer anioMuerte) {
 		this.titulo = titulo;
 		this.descargas = descargas;
+		this.nombre = nombre;
+		this.anioNacimiento = anioNacimiento;
+		this.anioMuerte = anioMuerte;
+		this.datosLibros = datosLibros;
+		this.datosAutor =  datosAutor;
+		this.datosInformacion = datosInformacion;
+
 	}
 
+
+
 	public Libros(DatosAutor datosAutor) {
-		{
 			this.titulo = datosAutor.titulo();
 			this.descargas = datosAutor.descargas();
+
+
 		}
+
+	public Libros (DatosInformacion datosInformacion){
+		this.nombre = datosInformacion.nombre();
+		this.anioNacimiento = datosInformacion.anioNacimiento();
+		this.anioMuerte = datosInformacion.anioMuerte();
 	}
 
 	public Libros(DatosLibro datos) {
@@ -51,12 +75,28 @@ public class Libros {
 		this.descargas = descargas;
 	}
 
-	public Autor getAutor() {
-		return autor;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setAutor(Autor autor) {
-		this.autor = autor;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Integer getAnioNacimiento() {
+		return anioNacimiento;
+	}
+
+	public void setAnioNacimiento(Integer anioNacimiento) {
+		this.anioNacimiento = anioNacimiento;
+	}
+
+	public Integer getAnioMuerte() {
+		return anioMuerte;
+	}
+
+	public void setAnioMuerte(Integer anioMuerte) {
+		this.anioMuerte = anioMuerte;
 	}
 
 	@Override
@@ -64,6 +104,9 @@ public class Libros {
 		return "Libros{" +
 				"titulo='" + titulo + '\'' +
 				", descargas=" + descargas +
+				", nombre='" + nombre + '\'' +
+				", anioNacimiento=" + anioNacimiento +
+				", anioMuerte=" + anioMuerte +
 				'}';
 	}
 }
