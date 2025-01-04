@@ -57,7 +57,7 @@ DELETE  FROM libros WHERE ID = 15*/
 		return titulo;
 	}
 
-	public void setTitulo(String titulo) {
+	public static void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
 
