@@ -6,6 +6,7 @@ import com.bio.literatura.service.ConsumoAPI;
 import com.bio.literatura.service.ConvierteDatos;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class Principal {
 					1. Buscar libro.
 					2. Buscar libro por autor.
 					3. Buscar libro por rango de años.
-					4.
+					4. Mostrar libros buscados.
 					0. Salir.
 					""";
 			System.out.println(menu);
@@ -50,8 +51,13 @@ public class Principal {
 					break;
 				case 2:
 					buscarLibroPorAutor();
+					break;
 				case 3:
 					buscarLibroPorAutorVivo();
+					break;
+				case 4:
+					mostrarBuscados();
+
 				case 0:
 					System.out.println("Gracias por usar el programa");
 					break;
@@ -65,9 +71,8 @@ public class Principal {
 
 
 
-
 	private DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
-		System.out.print("digita el titulo del libro: ");
+		System.out.print("Digita el titulo del libro: ");
 		var libro = teclado.nextLine().strip();
 		//El uso de %20 se debe al protocolo de codificación de URLs (definido en el estándar RFC 3986),
 		var json = consumoAPI.obtenerDatos(URL_BASE + libro.replace(" ", "%20"));
@@ -80,6 +85,8 @@ public class Principal {
 
 	private void busCarLibro() {
 		DatosLibro datos = getDatosLibro();
+		System.out.println(datos);
+
 		List<DatosAutor> datosAutoresAPI = datos.resultado();
 
 		List<String> titulosBaseDatos = repositorio.findAll()
@@ -103,11 +110,15 @@ public class Principal {
 
 		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
 	}
+
+
 	private void buscarLibroPorAutor() {
 		System.out.print("Digita el nombre del autor: ");
 		var autor = teclado.nextLine().strip();
 		var json = consumoAPI.obtenerDatos(URL_BASE + autor.replace(" ", "%20"));
 		DatosLibro datosLibro = convierteDatos.obtenerDatos(json, DatosLibro.class);
+		System.out.println(datosLibro);
+
 		List<DatosAutor> datosAutoresAPI = datosLibro.resultado();
 
 		List<String> titulosBaseDatos = repositorio.findAll()
@@ -130,7 +141,6 @@ public class Principal {
 				.collect(Collectors.toList());
 
 		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
-		System.out.println(datosLibro);
 	}
 
 	private DatosLibro datosAños() {
@@ -150,6 +160,7 @@ public class Principal {
 
 	private void buscarLibroPorAutorVivo() { // Buscar libros por autor que estén vivos y se guardan en la base de datos
 		DatosLibro datos = datosAños();
+		System.out.println(datos);
 		List<DatosAutor> datosAutoresAPI = datos.resultado();
 
 		List<String> titulosBaseDatos = repositorio.findAll()
@@ -173,5 +184,57 @@ public class Principal {
 
 		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
 	}
+
+	private void mostrarBuscados() {
+
+		while (true) {
+
+			System.out.println("""
+					Elige una obcion
+					
+					1. Buscar por tuitulo.
+					2. Buscaar por autor.
+					3. Buscar por rango de años.
+					
+					""");
+			System.out.print("Digita la obcion: ");
+			var numero = teclado.nextInt();
+
+			if(numero == 1){
+				System.out.print("Digita el libro que quieres buscar: ");
+				var buscarLibro = teclado.nextLine();
+
+				Optional<Libros> libroBuscado = repositorio.findByTituloContainsIgnoreCase(buscarLibro);
+
+				if (libroBuscado.isPresent()) {
+					System.out.println("La serie buscada es: " + libroBuscado.get());
+				}else{System.out.println("No se a buscado este libro asi que no se a guardado en la base de datos");}
+				break;
+
+			} else if (numero == 2) {
+				System.out.print("Digita el autor que quieres buscar: ");
+				var buscarLibro = teclado.nextLine();
+				Optional<Libros> libroBuscado = repositorio.findByAutorContainsIgnoreCase(buscarLibro);
+
+				if (libroBuscado.isPresent()) {
+					System.out.println("El libro buscado es: " + libroBuscado.get());
+				}else{System.out.println("No se a buscado este autor asi que no se a guardado en la base de datos");}
+				break;
+
+			}else if (numero == 3) {
+				System.out.print("Digita el año que quieres buscar: ");
+				var buscarLibro = teclado.nextInt();
+				Optional<Libros> libroBuscado = repositorio.findByAnioNacimiento(buscarLibro);
+
+				if (libroBuscado.isPresent()) {
+					System.out.println("El año buscada es: " + libroBuscado.get());
+				}else{System.out.println("No se a buscado este autor por su año asi que no se a guardado en la base de datos");}
+				break;
+			}else {
+				System.out.println("Opcion no valida");
+			}
+		}
+
+		}
 }
 
