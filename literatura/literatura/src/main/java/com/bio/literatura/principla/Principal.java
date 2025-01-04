@@ -78,23 +78,60 @@ public class Principal {
 		return datosLibro;
 	}
 
-	private void busCarLibro(){
+	private void busCarLibro() {
 		DatosLibro datos = getDatosLibro();
-		System.out.println(datos);
-		Libros libros = new Libros(datos);
-		System.out.println(libros);
-		repositorio.save(libros);
-	}
+		List<DatosAutor> datosAutoresAPI = datos.resultado();
 
-	private void buscarLibroPorAutor(){
+		List<String> titulosBaseDatos = repositorio.findAll()
+				.stream()
+				.map(Libros::getTitulo)
+				.collect(Collectors.toList());
+
+		List<Libros> librosNuevos = datosAutoresAPI.stream()
+				.filter(datosAutor -> !titulosBaseDatos.contains(datosAutor.titulo())) // Filtrar títulos que no existen en la base de datos
+				.map(datosAutor -> {
+					DatosInformacion datosInformacion = datosAutor.autores().get(0);
+					return new Libros(
+							datosAutor.titulo(),
+							datosAutor.descargas(),
+							datosInformacion.autor(),
+							datosInformacion.anioNacimiento(),
+							datosInformacion.anioMuerte()
+					);
+				})
+				.collect(Collectors.toList());
+
+		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
+	}
+	private void buscarLibroPorAutor() {
 		System.out.print("Digita el nombre del autor: ");
 		var autor = teclado.nextLine().strip();
 		var json = consumoAPI.obtenerDatos(URL_BASE + autor.replace(" ", "%20"));
 		DatosLibro datosLibro = convierteDatos.obtenerDatos(json, DatosLibro.class);
-		repositorio.save(new Libros(datosLibro));
-		System.out.println(datosLibro);
+		List<DatosAutor> datosAutoresAPI = datosLibro.resultado();
 
-	   }
+		List<String> titulosBaseDatos = repositorio.findAll()
+				.stream()
+				.map(Libros::getTitulo)
+				.collect(Collectors.toList());
+
+		List<Libros> librosNuevos = datosAutoresAPI.stream()
+				.filter(datosAutor -> !titulosBaseDatos.contains(datosAutor.titulo())) // Filtrar títulos que no existen en la base de datos
+				.map(datosAutor -> {
+					DatosInformacion datosInformacion = datosAutor.autores().get(0);
+					return new Libros(
+							datosAutor.titulo(),
+							datosAutor.descargas(),
+							datosInformacion.autor(),
+							datosInformacion.anioNacimiento(),
+							datosInformacion.anioMuerte()
+					);
+				})
+				.collect(Collectors.toList());
+
+		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
+		System.out.println(datosLibro);
+	}
 
 	private DatosLibro datosAños() {
 		System.out.print("Digita el año antes de su muerte: ");
@@ -111,33 +148,30 @@ public class Principal {
 		return datosLibros;
 	}
 
-	private void buscarLibroPorAutorVivo(){
+	private void buscarLibroPorAutorVivo() { // Buscar libros por autor que estén vivos y se guardan en la base de datos
 		DatosLibro datos = datosAños();
-		List<String> titulosAPI = datos.resultado ()
+		List<DatosAutor> datosAutoresAPI = datos.resultado();
+
+		List<String> titulosBaseDatos = repositorio.findAll()
 				.stream()
-				.map(DatosAutor::titulo)
-				.collect(Collectors.toList());
-
-
-		List <Libros> datosBaseDatos = repositorio.findAll();
-		datosBaseDatos.stream()
 				.map(Libros::getTitulo)
 				.collect(Collectors.toList());
 
-
-		List<String> titulosNuevos = titulosAPI.stream()
-				.filter(titulo -> !datosBaseDatos.contains(titulo)) // Filtrar títulos que no existen
+		List<Libros> librosNuevos = datosAutoresAPI.stream()
+				.filter(datosAutor -> !titulosBaseDatos.contains(datosAutor.titulo())) // Filtrar títulos que no existen en la base de datos
+				.map(datosAutor -> {
+					DatosInformacion datosInformacion = datosAutor.autores().get(0);
+					return new Libros(
+							datosAutor.titulo(),
+							datosAutor.descargas(),
+							datosInformacion.autor(),
+							datosInformacion.anioNacimiento(),
+							datosInformacion.anioMuerte()
+					);
+				})
 				.collect(Collectors.toList());
 
-		List<Libros> librosNuevos = titulosNuevos.stream()
-													.map(t -> {
-														Libros libros = new Libros();
-														Libros.setTitulo(t);
-																return libros;});
-
-
-
-		repositorio.saveAll(librosNuevos);
+		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
 	}
 }
 
