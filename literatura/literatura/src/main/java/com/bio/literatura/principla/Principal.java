@@ -94,18 +94,19 @@ public class Principal {
 				.map(datosAutor -> {
 					DatosInformacion datosInformacion = datosAutor.autores().get(0);
 					return new Libros(
-							datosAutor.titulo(),
+							datosAutor.titulo(),//dentro de la lista de autores se encuentra el titulo
 							datosAutor.descargas(),
 							datosInformacion.autor(),
-							datosInformacion.anioNacimiento(),
-							datosInformacion.anioMuerte()
+							datosInformacion.anioNacimiento(),//dentro de la lista de autores se encuentra ls lista de informacion dentro de la lista esta el año de nacimiento
+							datosInformacion !=null ? datosInformacion.anioMuerte() : 0,
+							datosAutor.lenguaje() // dentro de la lista de lenguaje se encuentra el lenguaje
 					);
 				})
 				.collect(Collectors.toList());
-        if (!librosNuevos.isEmpty()) {
-            repositorio.saveAll(librosNuevos);
-        }else{System.out.println("Este libro ya se busco, con sulta la base de datos ");}
-		 // Guardar los nuevos libros en la base de datos
+		if (!librosNuevos.isEmpty()) {
+			repositorio.saveAll(librosNuevos);
+		}else{System.out.println("Este libro ya se busco, con sulta la base de datos ");}
+		// Guardar los nuevos libros en la base de datos
 	}
 
 
@@ -132,7 +133,8 @@ public class Principal {
 							datosAutor.descargas(),
 							datosInformacion.autor(),
 							datosInformacion.anioNacimiento(),
-							datosInformacion.anioMuerte()
+							datosInformacion.anioMuerte(),
+							datosAutor.lenguaje()
 					);
 				})
 				.collect(Collectors.toList());

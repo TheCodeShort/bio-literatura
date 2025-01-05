@@ -2,7 +2,6 @@ package com.bio.literatura.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 @Entity //se crea la entidad libro
 @Table(name = "libros")//se crea la tabla libro
@@ -20,19 +19,22 @@ DELETE  FROM libros WHERE ID = 15*/
 	private String autor;
 	private Integer anioNacimiento;
 	private Integer anioMuerte;
+	private List<String> lenguaje;
 
 
 	@OneToMany(mappedBy = "libros")//se crea la relacion de uno a muchos
 	private List<Autores> autores;
 	public Libros() {
 	}
-	public Libros( String titulo, Integer descargas, String autor, Integer anioNacimiento, Integer anioMuerte) {
+
+	public Libros(String titulo, Integer descargas, String autor, Integer anioNacimiento, Integer anioMuerte, List<String> lenguaje) {
 		this.titulo = titulo;
 		this.descargas = descargas;
 		this.autor = autor;
 		this.anioNacimiento = anioNacimiento;
 		this.anioMuerte = anioMuerte;
-	}
+		this.lenguaje = lenguaje;
+}
 
 	public Libros(DatosLibro datosLibro) {
 		DatosAutor datosAutor = datosLibro.resultado().get(0);
@@ -43,6 +45,8 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.autor = datosInformacion.autor();
 		this.anioNacimiento = datosInformacion.anioNacimiento();
 		this.anioMuerte = datosInformacion.anioMuerte();
+		this.lenguaje = datosAutor.lenguaje();
+
 
 	}
 
@@ -86,14 +90,16 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.anioMuerte = anioMuerte;
 	}
 
+
 	@Override
 	public String toString() {
-		return
-				"Titulo de liboros = " + titulo + "\n" +
-				"Descargas = " + descargas + "\n" +
+		return "Titulo de liboros = " + titulo + "\n" +
+				"Nombre autor = " + autor + "\n" +
 				"Año de nacimiento = " + anioNacimiento + "\n" +
 				"Año de muerte = " + anioMuerte + "\n" +
-				"Nombre autor = " + autor + "\n";
+				"Descargas = " + descargas + "\n" +
+				"Idioma = " + lenguaje + "\n";
+
 	}
 }
 
