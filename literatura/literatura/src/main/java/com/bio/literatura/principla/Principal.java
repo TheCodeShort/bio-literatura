@@ -4,7 +4,9 @@ import com.bio.literatura.model.*;
 import com.bio.literatura.repositorio.ILibroRepositorio;
 import com.bio.literatura.service.ConsumoAPI;
 import com.bio.literatura.service.ConvierteDatos;
+import org.springframework.data.util.Optionals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -98,7 +100,7 @@ public class Principal {
 							datosAutor.descargas(),
 							datosInformacion.autor(),
 							datosInformacion.anioNacimiento(),//dentro de la lista de autores se encuentra ls lista de informacion dentro de la lista esta el año de nacimiento
-							datosInformacion !=null ? datosInformacion.anioMuerte() : 0,
+							datosInformacion .anioMuerte(),
 							datosAutor.lenguaje() // dentro de la lista de lenguaje se encuentra el lenguaje
 					);
 				})
@@ -240,7 +242,51 @@ public class Principal {
 					System.out.println("No se a buscado este autor por su año asi que no se a guardado en la base de datos");
 				}
 
-			}else {
+			}else if(numero == 4){
+                System.out.printf("""
+                        Digita el idioma en el que estan los libros
+                        Ejemplo: 
+                                en: Inglés
+                                fr: Francés
+                                de: Alemán
+                                it: Italiano
+                                pt: Portugués
+                                ru: Ruso
+                                zh: Chino (generalmente mandarín)
+                                ja: Japonés
+                                ko: Coreano
+                                ar: Árabe
+                                nl: Neerlandés (Holandés)
+                                pl: Polaco
+                                sv: Sueco
+                                tr: Turco
+                                hi: Hindi
+                                bn: Bengalí
+                                th: Tailandés
+                                vi: Vietnamita
+                                el: Griego
+                                he: Hebreo
+                                ur: Urdu
+                        """);
+                System.out.print("Idioma: ");
+
+                var buscarIdioma = teclado.nextLine();
+                teclado.nextLine();
+				var idiomaRaro = "´{"+ buscarIdioma +"}";
+
+                List<String> listaIdioma = new ArrayList<>();
+				listaIdioma.add(idiomaRaro);
+
+				Optional<Libros> idiomaBuscado = repositorio.findByLenguajeContainsIgnoreCase(listaIdioma);
+
+
+                if (!idiomaBuscado.isEmpty()) {
+                    System.out.println("El año buscada es: " + "\n" + idiomaBuscado.get());
+                } else {
+                    System.out.println("No hay  libros en este idioma");
+                }
+
+            } else {
 				System.out.println("Opcion no valida");
 			}
             System.out.printf("""
@@ -249,6 +295,7 @@ public class Principal {
                     1. Segir buscadno en la base de datos?.
                     2. Salir.
                     """);
+            System.out.print("Opcion: ");
             var opcion = teclado.nextInt();
             if (opcion == 1) {
                 System.out.printf("Segir buscando");

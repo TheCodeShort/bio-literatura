@@ -1,7 +1,10 @@
 package com.bio.literatura.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Convert;
 
+
+import java.util.Arrays;
 import java.util.List;
 @Entity //se crea la entidad libro
 @Table(name = "libros")//se crea la tabla libro
@@ -19,7 +22,9 @@ DELETE  FROM libros WHERE ID = 15*/
 	private String autor;
 	private Integer anioNacimiento;
 	private Integer anioMuerte;
+	@Transient
 	private List<String> lenguaje;
+
 
 
 	@OneToMany(mappedBy = "libros")//se crea la relacion de uno a muchos
@@ -34,12 +39,14 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.anioNacimiento = anioNacimiento;
 		this.anioMuerte = anioMuerte;
 		this.lenguaje = lenguaje;
+
 }
 
 	public Libros(DatosLibro datosLibro) {
 		DatosAutor datosAutor = datosLibro.resultado().get(0);
 		this.descargas = datosAutor.descargas();
 		this.titulo = datosAutor.titulo();
+
 
 		DatosInformacion datosInformacion = datosAutor.autores().get(0);
 		this.autor = datosInformacion.autor();
@@ -48,6 +55,16 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.lenguaje = datosAutor.lenguaje();
 
 
+
+	}
+
+
+	public List<String> getLenguaje() {
+		return lenguaje;
+	}
+
+	public void setLenguaje(List<String> lenguaje) {
+		this.lenguaje = lenguaje;
 	}
 
 	public Integer getDescargas() {
