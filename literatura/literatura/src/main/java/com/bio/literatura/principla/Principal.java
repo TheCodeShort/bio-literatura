@@ -203,8 +203,9 @@ public class Principal {
 			if(numero == 1){
 				System.out.print("Digita el libro que quieres buscar: ");
 				var buscarLibro = teclado.nextLine();
-
+				teclado.nextLine();
 				Optional<Libros> libroBuscado = repositorio.findByTituloContainsIgnoreCase(buscarLibro);
+
 
 				if (libroBuscado.isPresent()) {
 					System.out.println("La serie buscada es: " + libroBuscado.get());
