@@ -37,8 +37,7 @@ public class Principal {
 			var menu = """
 					1. Buscar libro.
 					2. Buscar libro por autor.
-					3. Buscar libro por rango de años.
-					4. Mostrar libros buscados.
+					3. Mostrar libros buscados.
 					0. Salir.
 					""";
 			System.out.println(menu);
@@ -53,11 +52,7 @@ public class Principal {
 					buscarLibroPorAutor();
 					break;
 				case 3:
-					buscarLibroPorAutorVivo();
-					break;
-				case 4:
 					mostrarBuscados();
-
 				case 0:
 					System.out.println("Gracias por usar el programa");
 					break;
@@ -107,8 +102,10 @@ public class Principal {
 					);
 				})
 				.collect(Collectors.toList());
-
-		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
+        if (!librosNuevos.isEmpty()) {
+            repositorio.saveAll(librosNuevos);
+        }else{System.out.println("Este libro ya se busco, con sulta la base de datos ");}
+		 // Guardar los nuevos libros en la base de datos
 	}
 
 
@@ -139,11 +136,13 @@ public class Principal {
 					);
 				})
 				.collect(Collectors.toList());
-
+        if (!librosNuevos.isEmpty()) {
+            repositorio.saveAll(librosNuevos);
+        }else{System.out.println("Este autor ya se busco, con sulta la base de datos ");}
 		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
 	}
 
-	private DatosLibro datosAños() {
+	/*private DatosLibro datosAños() {
 		System.out.print("Digita el año antes de su muerte: ");
 		var añoAntes = teclado.nextLine();
 		var vivo = Integer.parseInt(añoAntes);
@@ -156,9 +155,9 @@ public class Principal {
 		DatosLibro datosLibros = convierteDatos.obtenerDatos(json, DatosLibro.class);
 
 		return datosLibros;
-	}
+	}*/
 
-	private void buscarLibroPorAutorVivo() { // Buscar libros por autor que estén vivos y se guardan en la base de datos
+	/*private void buscarLibroPorAutorVivo() { // Buscar libros por autor que estén vivos y se guardan en la base de datos
 		DatosLibro datos = datosAños();
 		System.out.println(datos);
 		List<DatosAutor> datosAutoresAPI = datos.resultado();
@@ -183,7 +182,7 @@ public class Principal {
 				.collect(Collectors.toList());
 
 		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
-	}
+	}*/
 
 	private void mostrarBuscados() {
 
@@ -195,6 +194,7 @@ public class Principal {
 					1. Buscar por tuitulo.
 					2. Buscaar por autor.
 					3. Buscar por rango de años.
+					4. Buscar por lenguaje.
 					
 					""");
 			System.out.print("Digita la obcion: ");
@@ -208,33 +208,57 @@ public class Principal {
 
 
 				if (libroBuscado.isPresent()) {
-					System.out.println("La serie buscada es: " + libroBuscado.get());
+					System.out.println("El libro buscado es: " + "\n" + libroBuscado.get());
 				}else{System.out.println("No se a buscado este libro asi que no se a guardado en la base de datos");}
-				break;
+
 
 			} else if (numero == 2) {
 				System.out.print("Digita el autor que quieres buscar: ");
 				var buscarLibro = teclado.nextLine();
+                teclado.nextLine();
 				Optional<Libros> libroBuscado = repositorio.findByAutorContainsIgnoreCase(buscarLibro);
 
 				if (libroBuscado.isPresent()) {
 					System.out.println("El libro buscado es: " + libroBuscado.get());
 				}else{System.out.println("No se a buscado este autor asi que no se a guardado en la base de datos");}
-				break;
+
 
 			}else if (numero == 3) {
-				System.out.print("Digita el año que quieres buscar: ");
-				var buscarLibro = teclado.nextInt();
-				Optional<Libros> libroBuscado = repositorio.findByAnioNacimiento(buscarLibro);
+				System.out.print("Digita una fecha para mostrar un rango: ");
+				var buscarStartYear = teclado.nextInt();
+                System.out.print("Digita la segunda fecha:");
+                var buscarendYear = teclado.nextInt();
+                teclado.nextLine();
 
-				if (libroBuscado.isPresent()) {
-					System.out.println("El año buscada es: " + libroBuscado.get());
-				}else{System.out.println("No se a buscado este autor por su año asi que no se a guardado en la base de datos");}
-				break;
+                List<Libros> libroBuscado = repositorio. findByAnioNacimientoBetween(buscarStartYear, buscarendYear);
+
+				if (!libroBuscado.isEmpty()) {
+					System.out.println("El año buscada es: " + "\n" + libroBuscado);
+				} else {
+					System.out.println("No se a buscado este autor por su año asi que no se a guardado en la base de datos");
+				}
+
 			}else {
 				System.out.println("Opcion no valida");
 			}
-		}
+            System.out.printf("""
+                    Digina una opcion
+                    
+                    1. Segir buscadno en la base de datos?.
+                    2. Salir.
+                    """);
+            var opcion = teclado.nextInt();
+            if (opcion == 1) {
+                System.out.printf("Segir buscando");
+            } else if (opcion == 2) {
+                System.out.printf("Gracias por usar el programa");
+                break;
+            } else {
+                System.out.println("Opcion no valida");
+
+            }
+
+        }
 
 		}
 }

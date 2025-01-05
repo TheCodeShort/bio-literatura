@@ -88,13 +88,12 @@ DELETE  FROM libros WHERE ID = 15*/
 
 	@Override
 	public String toString() {
-		return "Libros{" +
-				"titulo='" + titulo + '\'' +
-				", descargas=" + descargas +
-				", anioNacimiento=" + anioNacimiento +
-				", anioMuerte=" + anioMuerte +
-				", nombre='" + autor + '\'' +
-				'}';
+		return
+				"Titulo de liboros = " + titulo + "\n" +
+				"Descargas = " + descargas + "\n" +
+				"Año de nacimiento = " + anioNacimiento + "\n" +
+				"Año de muerte = " + anioMuerte + "\n" +
+				"Nombre autor = " + autor + "\n";
 	}
 }
 
