@@ -15,7 +15,7 @@ public interface ILibroRepositorio extends JpaRepository<Libros, Long> {
 
 	Optional<Libros> findByAutorContainsIgnoreCase(String autor);
 
-	List<Libros> findByLenguajeContainsIgnoreCase(String lenguaje);
+	List<Libros> findByLenguajeIgnoreCase(String lenguaje);
 
 	@Query("SELECT l FROM Libros l WHERE l.anioNacimiento BETWEEN :startYear AND :endYear")
 	List<Libros> findByAnioNacimientoBetween(@Param("startYear") Integer startYear, @Param("endYear") Integer endYear);

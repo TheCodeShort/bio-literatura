@@ -4,9 +4,7 @@ import com.bio.literatura.model.*;
 import com.bio.literatura.repositorio.ILibroRepositorio;
 import com.bio.literatura.service.ConsumoAPI;
 import com.bio.literatura.service.ConvierteDatos;
-import org.springframework.data.util.Optionals;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -201,6 +199,7 @@ public class Principal {
 					""");
 			System.out.print("Digita la obcion: ");
 			var numero = teclado.nextInt();
+			teclado.nextLine();
 
 			if (numero == 1) {
 				System.out.print("Digita el libro que quieres buscar: ");
@@ -230,9 +229,9 @@ public class Principal {
 
 
 			} else if (numero == 3) {
-				System.out.print("Digita una fecha para mostrar un rango: ");
+				System.out.print("Digita el año de nacimiento: ");
 				var buscarStartYear = teclado.nextInt();
-				System.out.print("Digita la segunda fecha:");
+				System.out.print("Digita el año de muerte:");
 				var buscarendYear = teclado.nextInt();
 				teclado.nextLine();
 
@@ -272,25 +271,20 @@ public class Principal {
 						""");
 				System.out.print("Idioma: ");
 
-				var buscarIdioma = teclado.nextLine();
-				teclado.nextLine();
+				var buscarIdioma = teclado.nextLine().trim();
 
-				List<Libros> libros = repositorio.findAll();
-				List<Libros> librosFiltrados = libros.stream()
-						.filter(libro -> libro.getLenguaje().contains(buscarIdioma))
-						.collect(Collectors.toList());
+				System.out.printf(buscarIdioma);
+				System.out.printf("hola");
+
+				List<Libros> idioma = repositorio.findByLenguajeIgnoreCase(buscarIdioma);
+
+				if (!idioma.isEmpty()) {
+					System.out.println("El año buscada es: " + "\n" + idioma);
+				} else {
+					System.out.println("Este idioma no existe");
+				}
 
 
-				if (!librosFiltrados.isEmpty()) {
-
-					librosFiltrados.forEach(libro -> {
-						System.out.println("Titulo de liboros = " + libro.getTitulo());
-						System.out.println("Nombre autor = " + libro.getAutor());
-						System.out.println("Año de nacimiento = " + libro.getAnioNacimiento());
-						System.out.println("Año de muerte = " + libro.getAnioMuerte());
-						System.out.println("Descargas = " + libro.getDescargas());
-						System.out.println("Idioma: " + libro.getLenguaje());
-					});
 
 				} else {
 					System.out.println("Opcion no valida");
@@ -317,6 +311,6 @@ public class Principal {
 
 		}
 	}
-}
+
 
 
