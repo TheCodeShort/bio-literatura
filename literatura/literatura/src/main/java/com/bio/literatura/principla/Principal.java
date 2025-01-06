@@ -23,14 +23,15 @@ public class Principal {
 	private final String URL_AÑOS_ANTES = "&author_year_end=";
 
 	private ILibroRepositorio repositorio;//cracion de la interfaz con su nombre y le creamos un constructor
-	public Principal(ILibroRepositorio repository){//evitamos hacer una instanzacion
+
+	public Principal(ILibroRepositorio repository) {//evitamos hacer una instanzacion
 		this.repositorio = repository;
 	}
 
-	public void muestraMenu(){
+	public void muestraMenu() {
 		System.out.printf("Bienvenido a la aplicacion de busqueda de libros.");
 		var opcion = -1;
-		while(opcion != 0){
+		while (opcion != 0) {
 			System.out.println("""
 					
 					Eligue una opcion.
@@ -38,22 +39,18 @@ public class Principal {
 
 			var menu = """
 					1. Buscar libro.
-					2. Buscar libro por autor.
-					3. Mostrar libros buscados.
+					2. Mostrar libros buscados.
 					0. Salir.
 					""";
 			System.out.println(menu);
 			System.out.print("Digita la obcion: ");
 			opcion = teclado.nextInt();
 			teclado.nextLine();
-			switch (opcion){
+			switch (opcion) {
 				case 1:
 					busCarLibro();
 					break;
 				case 2:
-					buscarLibroPorAutor();
-					break;
-				case 3:
 					mostrarBuscados();
 				case 0:
 					System.out.println("Gracias por usar el programa");
@@ -67,8 +64,7 @@ public class Principal {
 	}
 
 
-
-	private DatosLibro getDatosLibro(){//se consume la API (realiza la consulta)
+	private DatosLibro getDatosLibro() {//se consume la API (realiza la consulta)
 		System.out.print("Digita el titulo del libro: ");
 		var libro = teclado.nextLine().strip();
 		//El uso de %20 se debe al protocolo de codificación de URLs (definido en el estándar RFC 3986),
@@ -100,19 +96,21 @@ public class Principal {
 							datosAutor.descargas(),
 							datosInformacion.autor(),
 							datosInformacion.anioNacimiento(),//dentro de la lista de autores se encuentra ls lista de informacion dentro de la lista esta el año de nacimiento
-							datosInformacion .anioMuerte(),
-							datosAutor.lenguaje() // dentro de la lista de lenguaje se encuentra el lenguaje
+							datosInformacion.anioMuerte(),
+							String.join(",", datosAutor.lenguaje()) // dentro de la lista de lenguaje se encuentra el lenguaje
 					);
 				})
 				.collect(Collectors.toList());
 		if (!librosNuevos.isEmpty()) {
 			repositorio.saveAll(librosNuevos);
-		}else{System.out.println("Este libro ya se busco, con sulta la base de datos ");}
+		} else {
+			System.out.println("Este libro ya se busco, con sulta la base de datos ");
+		}
 		// Guardar los nuevos libros en la base de datos
 	}
 
 
-	private void buscarLibroPorAutor() {
+	/*private void buscarLibroPorAutor() {
 		System.out.print("Digita el nombre del autor: ");
 		var autor = teclado.nextLine().strip();
 		var json = consumoAPI.obtenerDatos(URL_BASE + autor.replace(" ", "%20"));
@@ -136,7 +134,7 @@ public class Principal {
 							datosInformacion.autor(),
 							datosInformacion.anioNacimiento(),
 							datosInformacion.anioMuerte(),
-							datosAutor.lenguaje()
+							String.join(",", datosAutor.lenguaje())
 					);
 				})
 				.collect(Collectors.toList());
@@ -144,7 +142,7 @@ public class Principal {
             repositorio.saveAll(librosNuevos);
         }else{System.out.println("Este autor ya se busco, con sulta la base de datos ");}
 		repositorio.saveAll(librosNuevos); // Guardar los nuevos libros en la base de datos
-	}
+	}*/
 
 	/*private DatosLibro datosAños() {
 		System.out.print("Digita el año antes de su muerte: ");
@@ -204,7 +202,7 @@ public class Principal {
 			System.out.print("Digita la obcion: ");
 			var numero = teclado.nextInt();
 
-			if(numero == 1){
+			if (numero == 1) {
 				System.out.print("Digita el libro que quieres buscar: ");
 				var buscarLibro = teclado.nextLine();
 				teclado.nextLine();
@@ -213,28 +211,32 @@ public class Principal {
 
 				if (libroBuscado.isPresent()) {
 					System.out.println("El libro buscado es: " + "\n" + libroBuscado.get());
-				}else{System.out.println("No se a buscado este libro asi que no se a guardado en la base de datos");}
+				} else {
+					System.out.println("No se a buscado este libro asi que no se a guardado en la base de datos");
+				}
 
 
 			} else if (numero == 2) {
 				System.out.print("Digita el autor que quieres buscar: ");
 				var buscarLibro = teclado.nextLine();
-                teclado.nextLine();
+				teclado.nextLine();
 				Optional<Libros> libroBuscado = repositorio.findByAutorContainsIgnoreCase(buscarLibro);
 
 				if (libroBuscado.isPresent()) {
 					System.out.println("El libro buscado es: " + libroBuscado.get());
-				}else{System.out.println("No se a buscado este autor asi que no se a guardado en la base de datos");}
+				} else {
+					System.out.println("No se a buscado este autor asi que no se a guardado en la base de datos");
+				}
 
 
-			}else if (numero == 3) {
+			} else if (numero == 3) {
 				System.out.print("Digita una fecha para mostrar un rango: ");
 				var buscarStartYear = teclado.nextInt();
-                System.out.print("Digita la segunda fecha:");
-                var buscarendYear = teclado.nextInt();
-                teclado.nextLine();
+				System.out.print("Digita la segunda fecha:");
+				var buscarendYear = teclado.nextInt();
+				teclado.nextLine();
 
-                List<Libros> libroBuscado = repositorio. findByAnioNacimientoBetween(buscarStartYear, buscarendYear);
+				List<Libros> libroBuscado = repositorio.findByAnioNacimientoBetween(buscarStartYear, buscarendYear);
 
 				if (!libroBuscado.isEmpty()) {
 					System.out.println("El año buscada es: " + "\n" + libroBuscado);
@@ -242,73 +244,79 @@ public class Principal {
 					System.out.println("No se a buscado este autor por su año asi que no se a guardado en la base de datos");
 				}
 
-			}else if(numero == 4){
-                System.out.printf("""
-                        Digita el idioma en el que estan los libros
-                        Ejemplo: 
-                                en: Inglés
-                                fr: Francés
-                                de: Alemán
-                                it: Italiano
-                                pt: Portugués
-                                ru: Ruso
-                                zh: Chino (generalmente mandarín)
-                                ja: Japonés
-                                ko: Coreano
-                                ar: Árabe
-                                nl: Neerlandés (Holandés)
-                                pl: Polaco
-                                sv: Sueco
-                                tr: Turco
-                                hi: Hindi
-                                bn: Bengalí
-                                th: Tailandés
-                                vi: Vietnamita
-                                el: Griego
-                                he: Hebreo
-                                ur: Urdu
-                        """);
-                System.out.print("Idioma: ");
+			} else if (numero == 4) {
+				System.out.printf("""
+						Digita el idioma en el que estan los libros
+						Ejemplo: 
+						        en: Inglés
+						        fr: Francés
+						        de: Alemán
+						        it: Italiano
+						        pt: Portugués
+						        ru: Ruso
+						        zh: Chino (generalmente mandarín)
+						        ja: Japonés
+						        ko: Coreano
+						        ar: Árabe
+						        nl: Neerlandés (Holandés)
+						        pl: Polaco
+						        sv: Sueco
+						        tr: Turco
+						        hi: Hindi
+						        bn: Bengalí
+						        th: Tailandés
+						        vi: Vietnamita
+						        el: Griego
+						        he: Hebreo
+						        ur: Urdu
+						""");
+				System.out.print("Idioma: ");
 
-                var buscarIdioma = teclado.nextLine();
-                teclado.nextLine();
-				var idiomaRaro = "´{"+ buscarIdioma +"}";
+				var buscarIdioma = teclado.nextLine();
+				teclado.nextLine();
 
-                List<String> listaIdioma = new ArrayList<>();
-				listaIdioma.add(idiomaRaro);
+				List<Libros> libros = repositorio.findAll();
+				List<Libros> librosFiltrados = libros.stream()
+						.filter(libro -> libro.getLenguaje().contains(buscarIdioma))
+						.collect(Collectors.toList());
 
-				Optional<Libros> idiomaBuscado = repositorio.findByLenguajeContainsIgnoreCase(listaIdioma);
 
+				if (!librosFiltrados.isEmpty()) {
 
-                if (!idiomaBuscado.isEmpty()) {
-                    System.out.println("El año buscada es: " + "\n" + idiomaBuscado.get());
-                } else {
-                    System.out.println("No hay  libros en este idioma");
-                }
+					librosFiltrados.forEach(libro -> {
+						System.out.println("Titulo de liboros = " + libro.getTitulo());
+						System.out.println("Nombre autor = " + libro.getAutor());
+						System.out.println("Año de nacimiento = " + libro.getAnioNacimiento());
+						System.out.println("Año de muerte = " + libro.getAnioMuerte());
+						System.out.println("Descargas = " + libro.getDescargas());
+						System.out.println("Idioma: " + libro.getLenguaje());
+					});
 
-            } else {
-				System.out.println("Opcion no valida");
+				} else {
+					System.out.println("Opcion no valida");
+				}
+				System.out.printf("""
+						Digina una opcion
+						
+						1. Segir buscadno en la base de datos?.
+						2. Salir.
+						""");
+				System.out.print("Opcion: ");
+				var opcion = teclado.nextInt();
+				if (opcion == 1) {
+					System.out.printf("Segir buscando");
+				} else if (opcion == 2) {
+					System.out.printf("Gracias por usar el programa");
+					break;
+				} else {
+					System.out.println("Opcion no valida");
+
+				}
+
 			}
-            System.out.printf("""
-                    Digina una opcion
-                    
-                    1. Segir buscadno en la base de datos?.
-                    2. Salir.
-                    """);
-            System.out.print("Opcion: ");
-            var opcion = teclado.nextInt();
-            if (opcion == 1) {
-                System.out.printf("Segir buscando");
-            } else if (opcion == 2) {
-                System.out.printf("Gracias por usar el programa");
-                break;
-            } else {
-                System.out.println("Opcion no valida");
-
-            }
-
-        }
 
 		}
+	}
 }
+
 

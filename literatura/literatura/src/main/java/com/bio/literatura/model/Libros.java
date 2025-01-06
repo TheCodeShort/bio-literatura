@@ -22,8 +22,8 @@ DELETE  FROM libros WHERE ID = 15*/
 	private String autor;
 	private Integer anioNacimiento;
 	private Integer anioMuerte;
-	@Transient
-	private List<String> lenguaje;
+	@Column(name = "lenguaje")
+	private String lenguaje;
 
 
 
@@ -32,7 +32,7 @@ DELETE  FROM libros WHERE ID = 15*/
 	public Libros() {
 	}
 
-	public Libros(String titulo, Integer descargas, String autor, Integer anioNacimiento, Integer anioMuerte, List<String> lenguaje) {
+	public Libros(String titulo, Integer descargas, String autor, Integer anioNacimiento, Integer anioMuerte, String lenguaje) {
 		this.titulo = titulo;
 		this.descargas = descargas;
 		this.autor = autor;
@@ -52,19 +52,18 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.autor = datosInformacion.autor();
 		this.anioNacimiento = datosInformacion.anioNacimiento();
 		this.anioMuerte = datosInformacion.anioMuerte();
-		this.lenguaje = datosAutor.lenguaje();
-
-
+		this.lenguaje = String.join(",", datosAutor.lenguaje());
 
 	}
 
 
 	public List<String> getLenguaje() {
-		return lenguaje;
+
+		return lenguaje != null ? List.of(lenguaje.split(",")) : List.of();
 	}
 
-	public void setLenguaje(List<String> lenguaje) {
-		this.lenguaje = lenguaje;
+	public void setLenguaje(List<String> lenguajes) {
+		this.lenguaje = String.join(",", lenguajes);
 	}
 
 	public Integer getDescargas() {
@@ -107,6 +106,13 @@ DELETE  FROM libros WHERE ID = 15*/
 		this.anioMuerte = anioMuerte;
 	}
 
+	public String getAutor() {
+		return autor;
+	}
+
+	public void setAutor(String autor) {
+		this.autor = autor;
+	}
 
 	@Override
 	public String toString() {
